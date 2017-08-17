@@ -85,12 +85,13 @@ purchaseItem = function(){
         // determine if enough stock
        if(data[0].stock_quantity > results.quantity ){
          // bid was high enough, so update db, let the user know, and start over
+         var totalPrice = results.quantity*data[0].price;
           query = connection.query(
             "UPDATE products SET ? WHERE ?",
             [
               {
                 stock_quantity: (data[0].stock_quantity-results.quantity),
-                product_sales: (data[0].product_sales+(results.quantity*data[0].price))
+                product_sales: (data[0].product_sales+totalPrice)
               },
               {
                 item_id: parseInt(results.id)
@@ -98,7 +99,7 @@ purchaseItem = function(){
             ],
             function(error) {
               if (error) throw err;
-              console.log("Purchase placed successfully!");
+              console.log(`Your purchase of $${totalPrice} was successful`);
               connection.end();
               //cv.displayAll();
             }
